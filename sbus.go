@@ -18,6 +18,14 @@ type Message struct {
 	Meta    Meta
 }
 
+func (m Message) WithMeta(key string, value interface{}) Message {
+	if m.Meta == nil {
+		m.Meta = Meta{}
+	}
+	m.Meta[key] = value
+	return m
+}
+
 type Meta map[string]interface{}
 
 type MessageHandler func(Message, *logrus.Entry) error
@@ -59,8 +67,7 @@ func (s *Sbus) RequestM(msg Message, handler MessageHandler, timeout time.Durati
 	replyTo := msg.Subject + "-" + uuid.NewV4().String()
 
 	s.transp.SubOnce(replyTo, handler)
-	msg.Meta["replyTo"] = replyTo
-	return s.PubM(msg)
+	return s.PubM(msg.WithMeta("replyTo", replyTo))
 }
 
 func (s *Sbus) Reply(msg Message, response interface{}) error {
