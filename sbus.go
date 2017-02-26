@@ -28,7 +28,7 @@ func (m Message) WithMeta(key string, value interface{}) Message {
 
 type Meta map[string]interface{}
 
-type MessageHandler func(Message, *logrus.Entry) error
+type MessageHandler func(Message) error
 
 type Transport interface {
 	Sub(subject string, handler MessageHandler) error

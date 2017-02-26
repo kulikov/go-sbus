@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 	"github.com/kulikov/go-sbus"
 )
 
@@ -14,17 +14,17 @@ type User struct {
 }
 
 func TestInMemory_Pub(t *testing.T) {
-	memory := NewInMemory(logrus.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.New().WithField("logger", "sbus"))
 
 	mark := 0
 
-	memory.Sub("get-users", func(msg sbus.Message, log *logrus.Entry) error {
+	memory.Sub("get-users", func(msg sbus.Message) error {
 		log.Infof("Received one %v", msg)
 		mark += 1
 		return nil
 	})
 
-	memory.Sub("get-users", func(msg sbus.Message, log *logrus.Entry) error {
+	memory.Sub("get-users", func(msg sbus.Message) error {
 		log.Infof("Received two %v", msg)
 		mark += 1
 		return nil
@@ -44,11 +44,11 @@ func TestInMemory_Pub(t *testing.T) {
 }
 
 func TestInMemory_SubOnce(t *testing.T) {
-	memory := NewInMemory(logrus.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.New().WithField("logger", "sbus"))
 
 	mark := 0
 
-	memory.SubOnce("do-once", func(msg sbus.Message, log *logrus.Entry) error {
+	memory.SubOnce("do-once", func(msg sbus.Message) error {
 		log.Infof("Received once %v", msg)
 		mark += 1
 		return nil
@@ -66,17 +66,17 @@ func TestInMemory_SubOnce(t *testing.T) {
 }
 
 func TestInMemory_SubOnceMixed(t *testing.T) {
-	memory := NewInMemory(logrus.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.New().WithField("logger", "sbus"))
 
 	mark := 0
 
-	memory.SubOnce("do-any", func(msg sbus.Message, log *logrus.Entry) error {
+	memory.SubOnce("do-any", func(msg sbus.Message) error {
 		log.Infof("Received once %v", msg)
 		mark += 1
 		return nil
 	})
 
-	memory.Sub("do-any", func(msg sbus.Message, log *logrus.Entry) error {
+	memory.Sub("do-any", func(msg sbus.Message) error {
 		log.Infof("Received %v", msg)
 		mark += 1
 		return nil
