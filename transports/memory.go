@@ -75,7 +75,7 @@ func (t *InMemory) Pub(msg *sbus.Message) error {
 		for _, handler := range exists {
 			go func(hdr sbus.MessageHandler) {
 				if err := hdr(*msg); err != nil {
-					t.log.WithError(err).Error("Error on handle message %v", msg)
+					t.log.WithError(err).Errorf("Error on handle message %v", msg)
 				}
 			}(handler)
 		}

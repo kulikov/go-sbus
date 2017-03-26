@@ -1,6 +1,7 @@
 package transports
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -20,6 +21,15 @@ func TestInMemory_Pub(t *testing.T) {
 
 	memory.Sub("get-users", func(msg sbus.Message) error {
 		log.Infof("Received one %v", msg)
+
+		u := &User{}
+		msg.Unmarshal(u)
+		log.Infof("User: %v", u)
+
+		if fmt.Sprintf("%v", u) != fmt.Sprintf("%v", &User{"Dima", 31}) {
+			t.Fail()
+		}
+
 		mark += 1
 		return nil
 	})
@@ -32,7 +42,7 @@ func TestInMemory_Pub(t *testing.T) {
 
 	memory.Pub(&sbus.Message{
 		Subject: "get-users",
-		Data:    map[string]string{"id": "123"},
+		Data:    sbus.Marshal(User{"Dima", 31}),
 		Meta:    sbus.Meta{"timestamp": 131312424},
 	})
 
