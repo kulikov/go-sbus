@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/kulikov/go-sbus"
 )
 
@@ -14,8 +14,14 @@ type User struct {
 	Age  int
 }
 
+var log = logrus.New()
+
+func init() {
+	log.Level = logrus.DebugLevel
+}
+
 func TestInMemory_Pub(t *testing.T) {
-	memory := NewInMemory(log.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.WithField("logger", "sbus"))
 
 	mark := 0
 
@@ -54,7 +60,7 @@ func TestInMemory_Pub(t *testing.T) {
 }
 
 func TestInMemory_SubOnce(t *testing.T) {
-	memory := NewInMemory(log.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.WithField("logger", "sbus"))
 
 	mark := 0
 
@@ -76,7 +82,7 @@ func TestInMemory_SubOnce(t *testing.T) {
 }
 
 func TestInMemory_SubOnceMixed(t *testing.T) {
-	memory := NewInMemory(log.New().WithField("logger", "sbus"))
+	memory := NewInMemory(log.WithField("logger", "sbus"))
 
 	mark := 0
 

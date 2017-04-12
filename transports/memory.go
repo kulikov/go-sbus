@@ -56,7 +56,7 @@ func (t *InMemory) SubOnce(subject string, handler sbus.MessageHandler) error {
 
 func (t *InMemory) Pub(msg *sbus.Message) error {
 	t.RLock()
-	exists := t.listeners[msg.Subject]
+	listeners := t.listeners[msg.Subject]
 	_, onceOk := t.once[msg.Subject]
 	t.RUnlock()
 
@@ -65,20 +65,21 @@ func (t *InMemory) Pub(msg *sbus.Message) error {
 		if once, ok := t.once[msg.Subject]; ok {
 			delete(t.once, msg.Subject)
 			t.Unlock()
-			exists = append(exists, once...)
+			listeners = append(listeners, once...)
 		} else {
 			t.Unlock()
 		}
 	}
 
-	if len(exists) > 0 {
-		for _, handler := range exists {
-			go func(hdr sbus.MessageHandler) {
-				if err := hdr(*msg); err != nil {
-					t.log.WithError(err).Errorf("Error on handle message %v", msg)
-				}
-			}(handler)
-		}
+	t.log.Debugf("Publish %v", msg)
+
+	for _, handler := range listeners {
+		go func(msg *sbus.Message, hdr sbus.MessageHandler) {
+			if err := hdr(*msg); err != nil {
+				t.log.WithError(err).Errorf("Error on handle message %v", msg)
+			}
+		}(msg, handler)
 	}
+
 	return nil
 }
