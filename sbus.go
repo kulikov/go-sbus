@@ -74,7 +74,12 @@ func (s *Sbus) Request(subject string, data interface{}, handler MessageHandler,
 }
 
 func (s *Sbus) RequestM(msg Message, handler MessageHandler, timeout time.Duration) error {
-	replyTo := msg.Subject + "-" + uuid.NewV4().String()
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+	
+	replyTo := msg.Subject + "-" + uid.String()
 
 	s.transp.SubOnce(replyTo, handler)
 	return s.PubM(msg.WithMeta("replyTo", replyTo))
