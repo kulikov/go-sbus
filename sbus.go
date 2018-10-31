@@ -78,7 +78,7 @@ func (s *Sbus) RequestM(msg Message, handler MessageHandler, timeout time.Durati
 	if err != nil {
 		return err
 	}
-	
+
 	replyTo := msg.Subject + "-" + uid.String()
 
 	s.transp.SubOnce(replyTo, handler)
