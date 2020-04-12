@@ -23,11 +23,6 @@ type InMemory struct {
 	sync.RWMutex
 }
 
-type handlerItem struct {
-	handler sbus.MessageHandler
-	once    bool
-}
-
 func (t *InMemory) Sub(subject string, handler sbus.MessageHandler) error {
 	t.Lock()
 	defer t.Unlock()
@@ -71,12 +66,12 @@ func (t *InMemory) Pub(msg *sbus.Message) error {
 		}
 	}
 
-	t.log.Debugf("Publish %v", msg)
+	t.log.Debugf("Publish %v ~~~> %s", msg.Subject, msg.Data)
 
 	for _, handler := range listeners {
 		go func(msg *sbus.Message, hdr sbus.MessageHandler) {
 			if err := hdr(*msg); err != nil {
-				t.log.WithError(err).Errorf("Error on handle message %v", msg)
+				t.log.WithError(err).Errorf("Error on handle message %v ~~~> %s", msg.Subject, msg.Data)
 			}
 		}(msg, handler)
 	}
