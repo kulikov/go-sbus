@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/kulikov/go-sbus"
+	"github.com/sirupsen/logrus"
 )
 
 type User struct {

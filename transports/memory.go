@@ -3,7 +3,7 @@ package transports
 import (
 	"sync"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/kulikov/go-sbus"
 )

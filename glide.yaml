@@ -1,4 +1,0 @@
-package: github.com/kulikov/go-sbus
-import:
-  - package: github.com/satori/go.uuid
-  - package: github.com/Sirupsen/logrus
