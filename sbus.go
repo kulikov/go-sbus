@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -74,7 +74,7 @@ func (s *Sbus) Request(subject string, data interface{}, handler MessageHandler,
 }
 
 func (s *Sbus) RequestM(msg Message, handler MessageHandler, timeout time.Duration) error {
-	uid, _ := uuid.NewV4()
+	uid := uuid.New()
 
 	replyTo := msg.Subject + "-" + uid.String()
 
